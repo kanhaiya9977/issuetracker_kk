@@ -2,6 +2,7 @@ const Project = require('../models/project');
 const Issue = require('../models/issues');
 
 
+// Controller for creating project as per Schema
 module.exports.create = async (req, res) => {
     try {
         let project =await Project.create({
@@ -9,16 +10,19 @@ module.exports.create = async (req, res) => {
             description : req.body.description,
             author : req.body.author
         });
-        console.log('Created Project :', project)
+//         console.log('Created Project :', project)
         return res.redirect('/');
     } catch (error) {
-        console.log('Error In creating Project try again !!', error)
+//         console.log('Error In creating Project try again !!', error)
         return res.redirect('back')
     }
 }
 
+
+// controller for creating issues as per schema
 module.exports.createIssue = async function (req, res) {
     try {
+//         first we have to ensure that  if project is persent or not for which issue will be created
       let project = await Project.findById(req.params.id);
       if (project) {
         let issue = await Issue.create({
@@ -27,12 +31,15 @@ module.exports.createIssue = async function (req, res) {
           labels: req.body.labels,
           author: req.body.author,
         });
+//           pushing created issue id into project's issues arraylis
         project.issues.push(issue);
   
+//           accessing labels with some condition
         if (!(typeof req.body.labels === 'string')) {
           for (let label of req.body.labels) {
             let isPresent = project.labels.find((obj) => obj == label);
             if (!isPresent) {
+//                 if not ispresent then push labels= into labels
               project.labels.push(label);
             }
           }
@@ -52,6 +59,8 @@ module.exports.createIssue = async function (req, res) {
     }
   };
 
+
+// controller for rendering project form page
   module.exports.createProject =  (req, res) => {
   
     return res.render('project_form', {
@@ -59,6 +68,7 @@ module.exports.createIssue = async function (req, res) {
     });
   };
 
+// controller for rendering  project page
   module.exports.project = async (req, res) => {
     try {
       let project = await Project.findById(req.params.id)
@@ -81,6 +91,7 @@ module.exports.createIssue = async function (req, res) {
     }
   }
 
+//   controller for rendering issue for page
   module.exports.issueForm = async (req, res) => {
 
     try{ 
@@ -101,6 +112,7 @@ module.exports.createIssue = async function (req, res) {
     }
   }
 
+//   controller for rendering project issues
   module.exports.showProjectIssues = async (req, res) => {
     try {
       let project =await Project.findById(req.params.id)
