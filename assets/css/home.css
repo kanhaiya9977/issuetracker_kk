@@ -1,3 +1,4 @@
+/* this contains the styles for home page and its components like list of projects etc */
 #project-info-container {
     display: flex;
     flex-direction: column;
